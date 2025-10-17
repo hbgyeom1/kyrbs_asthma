@@ -1,6 +1,6 @@
 /*Library*/
-libname A 'Z:\±è¿¹¿ø\#KYRBS\data';
-libname B "Z:\±è¿¹¿ø\4.Asthma_bmi_trend\data";
+libname A 'Z:\È²º¸°â\kyrbs_asthma\data';
+libname B "Z:\È²º¸°â\kyrbs_asthma";
 
 data Allyear;
 set 
@@ -24,7 +24,7 @@ A.kyrbs2023
 A.kyrbs2024;
 run;
 
-proc sort data =  Allyear; by year; run;
+proc sort data=Allyear; by year; run;
 proc freq data=allyear; table year; run;
 
 /*Age*/
@@ -181,49 +181,49 @@ if sex =. then subject = 0;
 run;
 proc freq data =  test1;
 table subject;
-run; *Sex missing = 0; *Sex missing = 0;
+run; *Sex missing = 0;
 
 data test2; set test1;
 if school =. then subject = 0;
 run;
 proc freq data =  test2;
 table subject;
-run; *Age missing = 0; *Age missing = 0;
+run; *School missing = 0;
 
 data test3; set test2;
 if region =. then subject = 0;
 run;
 proc freq data =  test3;
 table subject;
-run; *Region missing = 8; *Region missing = 0;
+run; *Region missing = 0;
 
 data test4; set test3;
 if incm =. then subject = 0;
 run;
 proc freq data =  test4;
 table subject;
-run; *Income missing = 33033; *Income missing = 13;
+run; *Income missing = 13;
 
 data test5; set test4;
 if BMI_g =. then subject = 0;
 run;
 proc freq data = test5;
 table subject;
-run; *BMI missing = 3; *BMI missing = 34513;
+run; *BMI missing = 34513;
 
 data test6; set test5;
 if house_g =. then subject = 0;
 run;
 proc freq data = test6;
 table subject;
-run; *Residence missing = 0; *Residence missing = 5;
+run; *Residence missing = 5;
 
 data test7; set test6;
 if stress =. then subject = 0;
 run;
 proc freq data = test7;
 table subject;
-run; *Stress missing = 0; *Stress missing = 0;
+run; *Stress missing = 0;
 
 data test8; set test7;
 if sleep_g =. then subject = 0;
@@ -274,8 +274,6 @@ run;
 
 data b.final; set final; run; /*Save*/
 data final; set b.final; run; /*load*/
-
-libname b "Z:\±è¿¹¿ø\4. Asthma_trend_KYRBS";
 
 /*=====================Table 1======================*/
 
@@ -532,6 +530,7 @@ run;
 %prevalence(data = BMI_3, dise = Asthma)
 
 
+/*=====================Table S1======================*/
 /*===============B value - Total=================*/
 /*±â°£ ³ª´©±â*/
 data Pre_total Intra_total Post_total; set Total;
@@ -707,312 +706,7 @@ smoking2,
 %Post_B_total(data = post3, disease_name = Asthma)
 
 
-
-/*=========================Table 3============================*/
-
-/*Odds Ratio*/
-data Odd1; set B.Total; run;
-
-data c1 c2 c3 c4 c5 c6 c7;
-set Odd1;
-if period in (1 2) then output c1;
-if period in (2 3) then output c2;
-if period in (3 4) then output c3;
-if period in (4 5) then output c4;
-if period in (5 6) then output c5;
-if period in (6 7) then output c6;
-if period in (7 8) then output c7;
-run;
-
-/*Period c1*/
-%macro logistic_model(model_name);
-PROC SURVEYLogistic data =  c1 NOMCAR;
-strata strata;
-cluster cluster;
-weight w_new;
-class period (ref = '1') / param =  ref;
-model &model_name (event = '1') = period;
-run;
-%mend;
-
-%logistic_model(Asthma_dg);
-%logistic_model(Asthma_male);
-%logistic_model(Asthma_female);
-%logistic_model(Asthma_middle);
-%logistic_model(Asthma_high);
-%logistic_model(Asthma_urban);
-%logistic_model(Asthma_rural);
-%logistic_model(Asthma_incm1);
-%logistic_model(Asthma_incm2);
-%logistic_model(Asthma_incm3);
-%logistic_model(Asthma_BMI1);
-%logistic_model(Asthma_BMI2);
-%logistic_model(Asthma_BMI3);
-%logistic_model(Asthma_BMI4);
-%logistic_model(Asthma_house1);
-%logistic_model(Asthma_house2);
-%logistic_model(Asthma_house3);
-%logistic_model(Asthma_house4);
-%logistic_model(Asthma_stress1);
-%logistic_model(Asthma_stress2);
-%logistic_model(Asthma_stress3);
-%logistic_model(Asthma_sleep1);
-%logistic_model(Asthma_sleep2);
-%logistic_model(Asthma_sleep3);
-%logistic_model(Asthma_food1);
-%logistic_model(Asthma_food2);
-%logistic_model(Asthma_food3);
-%logistic_model(Asthma_smoking1);
-%logistic_model(Asthma_smoking2);
-
-/*Period c2*/
-%macro logistic_model(model_name);
-PROC SURVEYLogistic data =  c2 NOMCAR;
-strata strata;
-cluster cluster;
-weight w_new;
-class period (ref = '2') / param =  ref;
-model &model_name (event = '1') = period;
-run;
-%mend;
-
-%logistic_model(Asthma_dg);
-%logistic_model(Asthma_male);
-%logistic_model(Asthma_female);
-%logistic_model(Asthma_middle);
-%logistic_model(Asthma_high);
-%logistic_model(Asthma_urban);
-%logistic_model(Asthma_rural);
-%logistic_model(Asthma_incm1);
-%logistic_model(Asthma_incm2);
-%logistic_model(Asthma_incm3);
-%logistic_model(Asthma_BMI1);
-%logistic_model(Asthma_BMI2);
-%logistic_model(Asthma_BMI3);
-%logistic_model(Asthma_BMI4);
-%logistic_model(Asthma_house1);
-%logistic_model(Asthma_house2);
-%logistic_model(Asthma_house3);
-%logistic_model(Asthma_house4);
-%logistic_model(Asthma_stress1);
-%logistic_model(Asthma_stress2);
-%logistic_model(Asthma_stress3);
-%logistic_model(Asthma_sleep1);
-%logistic_model(Asthma_sleep2);
-%logistic_model(Asthma_sleep3);
-%logistic_model(Asthma_food1);
-%logistic_model(Asthma_food2);
-%logistic_model(Asthma_food3);
-%logistic_model(Asthma_smoking1);
-%logistic_model(Asthma_smoking2);
-
-/*Period c3*/
-%macro logistic_model(model_name);
-PROC SURVEYLogistic data =  c3 NOMCAR;
-strata strata;
-cluster cluster;
-weight w_new;
-class period (ref = '3') / param =  ref;
-model &model_name (event = '1') = period;
-run;
-%mend;
-
-%logistic_model(Asthma_dg);
-%logistic_model(Asthma_male);
-%logistic_model(Asthma_female);
-%logistic_model(Asthma_middle);
-%logistic_model(Asthma_high);
-%logistic_model(Asthma_urban);
-%logistic_model(Asthma_rural);
-%logistic_model(Asthma_incm1);
-%logistic_model(Asthma_incm2);
-%logistic_model(Asthma_incm3);
-%logistic_model(Asthma_BMI1);
-%logistic_model(Asthma_BMI2);
-%logistic_model(Asthma_BMI3);
-%logistic_model(Asthma_BMI4);
-%logistic_model(Asthma_house1);
-%logistic_model(Asthma_house2);
-%logistic_model(Asthma_house3);
-%logistic_model(Asthma_house4);
-%logistic_model(Asthma_stress1);
-%logistic_model(Asthma_stress2);
-%logistic_model(Asthma_stress3);
-%logistic_model(Asthma_sleep1);
-%logistic_model(Asthma_sleep2);
-%logistic_model(Asthma_sleep3);
-%logistic_model(Asthma_food1);
-%logistic_model(Asthma_food2);
-%logistic_model(Asthma_food3);
-%logistic_model(Asthma_smoking1);
-%logistic_model(Asthma_smoking2);
-
-/*Period c4*/
-%macro logistic_model(model_name);
-PROC SURVEYLogistic data =  c4 NOMCAR;
-strata strata;
-cluster cluster;
-weight w_new;
-class period (ref = '4') / param =  ref;
-model &model_name (event = '1') = period;
-run;
-%mend;
-
-%logistic_model(Asthma_dg);
-%logistic_model(Asthma_male);
-%logistic_model(Asthma_female);
-%logistic_model(Asthma_middle);
-%logistic_model(Asthma_high);
-%logistic_model(Asthma_urban);
-%logistic_model(Asthma_rural);
-%logistic_model(Asthma_incm1);
-%logistic_model(Asthma_incm2);
-%logistic_model(Asthma_incm3);
-%logistic_model(Asthma_BMI1);
-%logistic_model(Asthma_BMI2);
-%logistic_model(Asthma_BMI3);
-%logistic_model(Asthma_BMI4);
-%logistic_model(Asthma_house1);
-%logistic_model(Asthma_house2);
-%logistic_model(Asthma_house3);
-%logistic_model(Asthma_house4);
-%logistic_model(Asthma_stress1);
-%logistic_model(Asthma_stress2);
-%logistic_model(Asthma_stress3);
-%logistic_model(Asthma_sleep1);
-%logistic_model(Asthma_sleep2);
-%logistic_model(Asthma_sleep3);
-%logistic_model(Asthma_food1);
-%logistic_model(Asthma_food2);
-%logistic_model(Asthma_food3);
-%logistic_model(Asthma_smoking1);
-%logistic_model(Asthma_smoking2);
-
-/*Period c5*/
-%macro logistic_model(model_name);
-PROC SURVEYLogistic data =  c5 NOMCAR;
-strata strata;
-cluster cluster;
-weight w_new;
-class period (ref = '5') / param =  ref;
-model &model_name (event = '1') = period;
-run;
-%mend;
-
-%logistic_model(Asthma_dg);
-%logistic_model(Asthma_male);
-%logistic_model(Asthma_female);
-%logistic_model(Asthma_middle);
-%logistic_model(Asthma_high);
-%logistic_model(Asthma_urban);
-%logistic_model(Asthma_rural);
-%logistic_model(Asthma_incm1);
-%logistic_model(Asthma_incm2);
-%logistic_model(Asthma_incm3);
-%logistic_model(Asthma_BMI1);
-%logistic_model(Asthma_BMI2);
-%logistic_model(Asthma_BMI3);
-%logistic_model(Asthma_BMI4);
-%logistic_model(Asthma_house1);
-%logistic_model(Asthma_house2);
-%logistic_model(Asthma_house3);
-%logistic_model(Asthma_house4);
-%logistic_model(Asthma_stress1);
-%logistic_model(Asthma_stress2);
-%logistic_model(Asthma_stress3);
-%logistic_model(Asthma_sleep1);
-%logistic_model(Asthma_sleep2);
-%logistic_model(Asthma_sleep3);
-%logistic_model(Asthma_food1);
-%logistic_model(Asthma_food2);
-%logistic_model(Asthma_food3);
-%logistic_model(Asthma_smoking1);
-%logistic_model(Asthma_smoking2);
-
-/*Period c6*/
-%macro logistic_model(model_name);
-PROC SURVEYLogistic data =  c6 NOMCAR;
-strata strata;
-cluster cluster;
-weight w_new;
-class period (ref = '6') / param =  ref;
-model &model_name (event = '1') = period;
-run;
-%mend;
-
-%logistic_model(Asthma_dg);
-%logistic_model(Asthma_male);
-%logistic_model(Asthma_female);
-%logistic_model(Asthma_middle);
-%logistic_model(Asthma_high);
-%logistic_model(Asthma_urban);
-%logistic_model(Asthma_rural);
-%logistic_model(Asthma_incm1);
-%logistic_model(Asthma_incm2);
-%logistic_model(Asthma_incm3);
-%logistic_model(Asthma_BMI1);
-%logistic_model(Asthma_BMI2);
-%logistic_model(Asthma_BMI3);
-%logistic_model(Asthma_BMI4);
-%logistic_model(Asthma_house1);
-%logistic_model(Asthma_house2);
-%logistic_model(Asthma_house3);
-%logistic_model(Asthma_house4);
-%logistic_model(Asthma_stress1);
-%logistic_model(Asthma_stress2);
-%logistic_model(Asthma_stress3);
-%logistic_model(Asthma_sleep1);
-%logistic_model(Asthma_sleep2);
-%logistic_model(Asthma_sleep3);
-%logistic_model(Asthma_food1);
-%logistic_model(Asthma_food2);
-%logistic_model(Asthma_food3);
-%logistic_model(Asthma_smoking1);
-%logistic_model(Asthma_smoking2);
-
-/*Period c7*/
-%macro logistic_model(model_name);
-PROC SURVEYLogistic data =  c7 NOMCAR;
-strata strata;
-cluster cluster;
-weight w_new;
-class period (ref = '7') / param =  ref;
-model &model_name (event = '1') = period;
-run;
-%mend;
-
-%logistic_model(Asthma_dg);
-%logistic_model(Asthma_male);
-%logistic_model(Asthma_female);
-%logistic_model(Asthma_middle);
-%logistic_model(Asthma_high);
-%logistic_model(Asthma_urban);
-%logistic_model(Asthma_rural);
-%logistic_model(Asthma_incm1);
-%logistic_model(Asthma_incm2);
-%logistic_model(Asthma_incm3);
-%logistic_model(Asthma_BMI1);
-%logistic_model(Asthma_BMI2);
-%logistic_model(Asthma_BMI3);
-%logistic_model(Asthma_BMI4);
-%logistic_model(Asthma_house1);
-%logistic_model(Asthma_house2);
-%logistic_model(Asthma_house3);
-%logistic_model(Asthma_house4);
-%logistic_model(Asthma_stress1);
-%logistic_model(Asthma_stress2);
-%logistic_model(Asthma_stress3);
-%logistic_model(Asthma_sleep1);
-%logistic_model(Asthma_sleep2);
-%logistic_model(Asthma_sleep3);
-%logistic_model(Asthma_food1);
-%logistic_model(Asthma_food2);
-%logistic_model(Asthma_food3);
-%logistic_model(Asthma_smoking1);
-%logistic_model(Asthma_smoking2);
-
-
-/*==========================Table 4========================*/
+/*==========================Table 3========================*/
 /*Risk Factor*/
 data Risk; set B.Total; run;
 
@@ -1022,10 +716,10 @@ if period in (4 5 6 7) then output Intra_risk;
 if period in (7 8 9) then output Post_risk;
 run;
 
+/*Overall*/
 proc sort data=Risk out=Risk;
 	by bmi_g; run;
 
-/*Overall*/
 %macro risk_factor1(ref_value, class_variable);
 ods select ParameterEstimates;
 ods select OddsRatios;
@@ -1043,16 +737,17 @@ run;
 %risk_factor1('2', sex)
 %risk_factor1('1', school)
 %risk_factor1('2', region)
-%risk_factor1('2', incm)
+%risk_factor1('3', incm)
 %risk_factor1('1', house_g)
 %risk_factor1('1', stress)
 %risk_factor1('1', sleep_g)
 %risk_factor1('1', food_g)
 %risk_factor1('2', smoking)
 
-
-
 /*Pre-pandemic*/
+proc sort data=Pre_Risk out=Pre_Risk;
+	by bmi_g; run;
+
 %macro risk_factor2(ref_value, class_variable);
 ods select ParameterEstimates;
 ods select OddsRatios;
@@ -1061,6 +756,7 @@ where subject = 1;
 strata strata;
 cluster cluster;
 weight w_new;
+by bmi_g;
 class &class_variable (ref=&ref_value) / param=ref;
 model Asthma_dg (event='1') = &class_variable;
 run;
@@ -1069,20 +765,17 @@ run;
 %risk_factor2('2', sex)
 %risk_factor2('1', school)
 %risk_factor2('2', region)
-%risk_factor2('2', incm)
-%risk_factor2('2', BMI_g)
+%risk_factor2('3', incm)
 %risk_factor2('1', house_g)
 %risk_factor2('1', stress)
 %risk_factor2('1', sleep_g)
 %risk_factor2('1', food_g)
 %risk_factor2('2', smoking)
-%risk_factor2('2', school)
-
-%risk_factor2('2', BMI_g)
-%risk_factor2('1', food_g)
-
 
 /*Intra-pandemic*/
+proc sort data=Intra_Risk out=Intra_Risk;
+	by bmi_g; run;
+
 %macro risk_factor3(ref_value, class_variable);
 ods select ParameterEstimates;
 ods select OddsRatios;
@@ -1091,6 +784,7 @@ where subject = 1;
 strata strata;
 cluster cluster;
 weight w_new;
+by bmi_g;
 class &class_variable (ref=&ref_value) / param=ref;
 model Asthma_dg (event='1') = &class_variable;
 run;
@@ -1099,19 +793,16 @@ run;
 %risk_factor3('2', sex)
 %risk_factor3('1', school)
 %risk_factor3('2', region)
-%risk_factor3('2', incm)
-%risk_factor3('1', BMI_g)
+%risk_factor3('3', incm)
 %risk_factor3('1', house_g)
 %risk_factor3('1', stress)
 %risk_factor3('1', sleep_g)
 %risk_factor3('2', food_g)
-%risk_factor3('2', smoking)
-
-%risk_factor3('2', BMI_g)
-%risk_factor3('1', food_g)
-
+%risk_factor2('2', smoking)
 
 /*Post-pandemic*/
+proc sort data=Post_Risk out=Post_Risk;
+	by bmi_g; run;
 %macro risk_factor4(ref_value, class_variable);
 ods select ParameterEstimates;
 ods select OddsRatios;
@@ -1120,6 +811,7 @@ where subject = 1;
 strata strata;
 cluster cluster;
 weight w_new;
+by bmi_g;
 class &class_variable (ref=&ref_value) / param=ref;
 model Asthma_dg (event='1') = &class_variable;
 run;
@@ -1128,16 +820,9 @@ run;
 %risk_factor4('2', sex)
 %risk_factor4('1', school)
 %risk_factor4('2', region)
-%risk_factor4('2', incm)
-%risk_factor4('1', BMI_g)
+%risk_factor4('3', incm)
 %risk_factor4('1', house_g)
 %risk_factor4('1', stress)
 %risk_factor4('1', sleep_g)
 %risk_factor4('2', food_g)
 %risk_factor4('2', smoking)
-
-%risk_factor4('2', BMI_g)
-%risk_factor4('1', food_g)
-
-
-
